@@ -1,7 +1,7 @@
 use actix_web::{web, App, HttpServer, Scope};
 use config::CONFIG;
 use error::Result;
-use sqlx::PgPool;
+use sqlx::{postgres::PgPoolOptions, PgPool};
 
 pub mod auth;
 pub mod config;
@@ -26,6 +26,10 @@ async fn main() -> Result<()> {
 }
 
 async fn connect_to_db() -> Result<PgPool> {
-    let pool = PgPool::connect(&CONFIG.db_url).await?;
+    println!("Connecting to database: {}", CONFIG.db_url);
+    let pool = PgPoolOptions::new().max_connections(5)
+        .connect(&CONFIG.db_url)
+        .await?;
+    println!("Connected to database");
     Ok(pool)
 }
