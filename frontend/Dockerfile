@@ -1,8 +1,8 @@
-FROM node:14.15.4-alpine3.12 as build_frontend
+FROM node:20-alpine3.20 as build_frontend
 
 WORKDIR /app
 
-COPY package.json ./
+COPY ./package.json ./
 
 RUN npm install
 
