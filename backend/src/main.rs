@@ -27,7 +27,8 @@ async fn main() -> Result<()> {
 
 async fn connect_to_db() -> Result<PgPool> {
     println!("Connecting to database: {}", CONFIG.db_url);
-    let pool = PgPoolOptions::new().max_connections(5)
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
         .connect(&CONFIG.db_url)
         .await?;
     println!("Connected to database");
