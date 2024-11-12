@@ -5,7 +5,7 @@ use sqlx::PgPool;
 use crate::{
     auth::{generate_token, validate_password},
     error::{Error, Result},
-    models::user::{UserLogin, UserRegister},
+    models::user::{User, UserLogin, UserRegister},
     repo::user::UserRepo,
 };
 
@@ -18,7 +18,7 @@ pub async fn login(pool: web::Data<PgPool>, login: web::Json<UserLogin>) -> Resu
 
     let is_valid = validate_password(&user.password_hash, &login.password).is_ok();
     if is_valid {
-        let token = generate_token(user.email, Utc::now() + Duration::days(30))?;
+        let token = generate_token(user.id, Utc::now() + Duration::days(30))?;
         Ok(HttpResponse::Ok().json(token))
     } else {
         Err(Error::InvalidPassword)
@@ -35,7 +35,7 @@ pub async fn register(
 
     let user = UserRepo::create(&mut connection, user.into()).await?;
 
-    let token = generate_token(user.email, Utc::now() + Duration::days(30))?;
+    let token = generate_token(user.id, Utc::now() + Duration::days(30))?;
 
     Ok(HttpResponse::Ok().json(token))
 }

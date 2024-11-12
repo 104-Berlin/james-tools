@@ -1,9 +1,12 @@
+use actix_web::FromRequest;
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, PasswordVerifier, SaltString},
     Argon2, PasswordHash,
 };
 use chrono::{DateTime, Utc};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use futures::future::Ready;
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use uuid::Uuid;
 
 use crate::{
     config::CONFIG,
@@ -12,7 +15,8 @@ use crate::{
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Claims {
-    pub sub: String,
+    /// User Id
+    pub sub: Uuid,
     pub exp: usize,
 }
 
@@ -32,11 +36,11 @@ pub fn validate_password(hash: &str, password: &str) -> Result<()> {
         .map_err(|_| crate::error::Error::InvalidPassword)
 }
 
-pub fn generate_token(email: String, expiration: DateTime<Utc>) -> Result<String> {
+pub fn generate_token(user_id: Uuid, expiration: DateTime<Utc>) -> Result<String> {
     let key = EncodingKey::from_secret(CONFIG.auth_secret.as_bytes());
 
     let claims = Claims {
-        sub: email,
+        sub: user_id,
         exp: expiration.timestamp() as usize,
     };
 
