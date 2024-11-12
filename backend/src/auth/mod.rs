@@ -50,3 +50,39 @@ pub fn generate_token(user_id: Uuid, expiration: DateTime<Utc>) -> Result<String
     })?;
     Ok(token)
 }
+
+impl FromRequest for Claims {
+    type Error = Error;
+    type Future = Ready<std::result::Result<Self, Self::Error>>;
+
+    fn from_request(
+        req: &actix_web::HttpRequest,
+        _payload: &mut actix_web::dev::Payload,
+    ) -> Self::Future {
+        let Some(auth) = req.headers().get("Authorization") else {
+            return futures::future::err(Error::AuthenticationError(
+                "No Authorization header".to_string(),
+            ));
+        };
+
+        let token = auth.to_str().unwrap().split("Bearer ").nth(1).unwrap();
+        let key = DecodingKey::from_secret(CONFIG.auth_secret.as_bytes());
+        let validation = Validation::new(Algorithm::HS256);
+        let claims = match decode::<Claims>(token, &key, &validation).inspect_err(|e| {
+            println!("Error decoding token: {:?}", e);
+        }) {
+            Ok(claims) => claims.claims,
+            Err(e) => {
+                let error = match e.kind() {
+                    jsonwebtoken::errors::ErrorKind::ExpiredSignature => {
+                        Error::AuthenticationError("Token has expired".to_string())
+                    }
+                    e => Error::AuthenticationError(format!("Token error: {:?}", e)),
+                };
+                return futures::future::err(error);
+            }
+        };
+
+        futures::future::ok(claims)
+    }
+}
