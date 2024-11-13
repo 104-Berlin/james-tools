@@ -29,9 +29,12 @@ export default function Profile() {
     };
 
     useEffect(() => {
+        console.log("Getting current user...");
         getCurrentUser().then((res) => {
             console.log("Current user: ", res);
             setUser(res.data);
+        }, (e) => {
+            console.error("Failed to get current user: ", e);
         });
     }, []);
 

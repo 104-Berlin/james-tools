@@ -24,3 +24,9 @@
 # How to use
 - Change default DATABASE_URL in the config.rs (for dev mode, or use .env)
 - 
+
+# SSL
+- You need to generate openssl certificates
+```
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj "/CN=localhost"
+``` 

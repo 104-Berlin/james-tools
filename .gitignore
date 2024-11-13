@@ -1,6 +1,8 @@
 target/
 Cargo.lock
 uploads/
+key.pem
+cert.pem
 
 # Logs
 logs

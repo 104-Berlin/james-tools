@@ -1,6 +1,7 @@
 use actix_web::{middleware::Logger, web, App, HttpServer, Scope};
 use config::CONFIG;
 use error::Result;
+use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
@@ -19,6 +20,9 @@ async fn main() -> Result<()> {
     std::fs::create_dir_all("./uploads")?;
 
     let pool = connect_to_db().await?;
+
+    let ssl_builder = init_ssl();
+
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
@@ -27,7 +31,7 @@ async fn main() -> Result<()> {
             .service(Scope::new("/api").configure(routes::configure))
             .service(actix_files::Files::new("/uploads", "./uploads"))
     })
-    .bind(("0.0.0.0", CONFIG.http_port))?
+    .bind_openssl(("0.0.0.0", CONFIG.http_port), ssl_builder)?
     .run()
     .await?;
 
@@ -42,4 +46,14 @@ async fn connect_to_db() -> Result<PgPool> {
         .await?;
     println!("Connected to database");
     Ok(pool)
+}
+
+fn init_ssl() -> SslAcceptorBuilder {
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+
+    builder
 }
