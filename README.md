@@ -16,17 +16,27 @@
 - [Futures](https://github.com/rust-lang/futures-rs)
 - [Hex](https://github.com/KokaKiwi/rust-hex)
 
-# Envirentment Vars
+# Environtment Vars
 - DATABASE_URL  | Connection URL for the database
 - PRODUCTION    | Whether we deploy or develop
 
 
 # How to use
-- Change default DATABASE_URL in the config.rs (for dev mode, or use .env)
-- 
 
-# SSL
-- You need to generate openssl certificates
+### Database
+
+Add .env file to backend folder with DATABASE_URL="URL_DATABASE_URL"
+
+```
+cd backend
+cargo install sqlx-cli
+sqlx migrate run
+```
+
+### SSL
+
+You need to generate openssl certificates
+
 ```
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj "/CN=localhost"
 ``` 
