@@ -5,10 +5,15 @@ import { LoginForm } from "../routes/Login";
 export type User = {
     email: string;
     username: string;
+    profilePicture: string;
 }
 
 export function getCurrentUser(): Promise<AxiosResponse<User>> {
     return axios.get("/api/user/current");
+}
+
+export function getProfilePicture(): Promise<AxiosResponse<File>> {
+    return axios.get("/api/user/profile-picture");
 }
 
 export function register(input: RegisterForm): Promise<AxiosResponse<string>> {

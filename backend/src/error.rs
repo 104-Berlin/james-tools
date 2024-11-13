@@ -19,6 +19,9 @@ pub enum Error {
 
     #[error("User not found")]
     UserNotFound,
+
+    #[error("No Profile Picture")]
+    NoProfilePicture,
 }
 
 impl ResponseError for Error {
@@ -28,7 +31,7 @@ impl ResponseError for Error {
             Error::IoError(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
             Error::AuthenticationError(_) => actix_web::http::StatusCode::UNAUTHORIZED,
             Error::InvalidPassword => actix_web::http::StatusCode::UNAUTHORIZED,
-            Error::UserNotFound => actix_web::http::StatusCode::NOT_FOUND,
+            Error::UserNotFound | Error::NoProfilePicture => actix_web::http::StatusCode::NOT_FOUND,
         }
     }
 }

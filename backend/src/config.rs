@@ -16,11 +16,11 @@ pub struct Config {
 
 impl Default for Config {
     fn default() -> Self {
-        dotenvy::dotenv().expect("Faile to load .env file");
+        dotenvy::dotenv().ok(); //.expect("Faile to load .env file");
 
         Self {
             db_url: std::env::var("DATABASE_URL")
-                .unwrap_or("postgres://postgres:1234@localhost/db".to_string()),
+                .unwrap_or("postgres://postgres:1234@localhost:5555/db".to_string()),
             http_port: std::env::var("PORT")
                 .unwrap_or("42069".to_string())
                 .parse()

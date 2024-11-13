@@ -15,13 +15,17 @@ pub mod routes;
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
+    // Create default directories for images.
+    std::fs::create_dir_all("./uploads")?;
+
     let pool = connect_to_db().await?;
     HttpServer::new(move || {
         App::new()
-        .wrap(Logger::default())
-        .wrap(TracingLogger::default())
+            .wrap(Logger::default())
+            .wrap(TracingLogger::default())
             .app_data(web::Data::new(pool.clone()))
             .service(Scope::new("/api").configure(routes::configure))
+            .service(actix_files::Files::new("/uploads", "./uploads"))
     })
     .bind(("0.0.0.0", CONFIG.http_port))?
     .run()

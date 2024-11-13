@@ -1,7 +1,12 @@
-use actix_web::{get, post, web, HttpResponse};
+use actix_files::NamedFile;
+use actix_multipart::Multipart;
+use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder};
 use chrono::{Duration, Utc};
+use futures::StreamExt as _;
 use sqlx::PgPool;
-use tracing::info;
+use std::io::Write;
+use tracing::{info, warn};
+use uuid::Uuid;
 
 use crate::{
     auth::{generate_token, validate_password, Claims},
@@ -12,10 +17,54 @@ use crate::{
 
 #[get("/current")]
 pub async fn get_user(pool: web::Data<PgPool>, claims: Claims) -> Result<web::Json<User>> {
-    info!("Getting user by id: {}", claims.sub);
+    info!("Getting user {}", claims.sub);
     let mut connection = pool.acquire().await?;
     let user = UserRepo::get_by_id(&mut connection, &claims.sub).await?;
     Ok(web::Json(user))
+}
+
+// Uploads the profile picture of the user
+#[post("/picture")]
+pub async fn upload_picture(
+    pool: web::Data<PgPool>,
+    claims: Claims,
+    mut payload: Multipart,
+) -> Result<HttpResponse> {
+    let mut image_url = String::new();
+
+    while let Some(item) = payload.next().await {
+        let mut field = item.unwrap();
+        let content_disposition = field.content_disposition().unwrap();
+        let filename = content_disposition.get_filename().unwrap();
+        let file_extension = filename.split('.').last().unwrap();
+        let new_filename = format!("{}.{}", Uuid::new_v4(), file_extension);
+        let filepath = format!("./uploads/{}", new_filename);
+
+        info!("Uploading file to {}", filepath);
+        let mut f = web::block(|| {
+            std::fs::OpenOptions::new()
+                .create(true)
+                .write(true)
+                .append(false)
+                .open(filepath)
+        })
+        .await
+        .unwrap()?;
+
+        while let Some(chunk) = field.next().await {
+            let data = chunk.unwrap();
+            f = web::block(move || f.write_all(&data).map(|_| f))
+                .await
+                .unwrap()?;
+        }
+
+        image_url = format!("/uploads/{}", new_filename);
+    }
+
+    // Store in the database
+    let mut connection = pool.acquire().await?;
+    UserRepo::update_picture(&mut connection, &claims.sub, &image_url).await?;
+    Ok(HttpResponse::Ok().finish())
 }
 
 #[post("/login")]
