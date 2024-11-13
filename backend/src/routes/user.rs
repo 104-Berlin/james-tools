@@ -1,16 +1,16 @@
 use actix_multipart::Multipart;
-use actix_web::{get, post, web, HttpResponse};
+use actix_web::{get, patch, post, web, HttpResponse};
 use chrono::{Duration, Utc};
 use futures::StreamExt as _;
 use sqlx::PgPool;
 use std::io::Write;
-use tracing::info;
+use tracing::{info, warn};
 use uuid::Uuid;
 
 use crate::{
     auth::{generate_token, validate_password, Claims},
     error::{Error, Result},
-    models::user::{User, UserLogin, UserRegister},
+    models::user::{User, UserLogin, UserRegister, UserUpdate},
     repo::user::UserRepo,
 };
 
@@ -20,6 +20,21 @@ pub async fn get_user(pool: web::Data<PgPool>, claims: Claims) -> Result<web::Js
     let mut connection = pool.acquire().await?;
     let user = UserRepo::get_by_id(&mut connection, &claims.sub).await?;
     Ok(web::Json(user))
+}
+
+#[patch("/current")]
+pub async fn update_user(
+    pool: web::Data<PgPool>,
+    claims: Claims,
+    user: web::Json<UserUpdate>,
+) -> Result<HttpResponse> {
+    let user = user.into_inner();
+    warn!("Updating user {:?}", user);
+    let mut connection = pool.acquire().await?;
+
+    UserRepo::update(&mut connection, claims.sub, user).await?;
+
+    Ok(HttpResponse::Ok().finish())
 }
 
 // Uploads the profile picture of the user

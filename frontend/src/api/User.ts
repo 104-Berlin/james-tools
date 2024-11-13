@@ -5,11 +5,22 @@ import { LoginForm } from "../routes/Login";
 export type User = {
     email: string;
     username: string;
+    firstName: string;
+    lastName: string;
     profilePicture: string;
+}
+
+export type UpdateCurrentUser = {
+    firstName?: string;
+    lastName?: string;
 }
 
 export function getCurrentUser(): Promise<AxiosResponse<User>> {
     return axios.get("/api/user/current");
+}
+
+export function updateCurrentUser(update: UpdateCurrentUser): Promise<AxiosResponse<any>> {
+    return axios.patch("/api/user/current", update);
 }
 
 export function getProfilePicture(): Promise<AxiosResponse<File>> {
