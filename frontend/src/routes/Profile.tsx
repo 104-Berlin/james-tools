@@ -54,6 +54,16 @@ export default function Profile() {
                                 <FileInput id="dropzone-file" onChange={handleImageChange} className="hidden" />
                             </Label>
                         </div>
+
+                        <div className="flex w-full items-center justify-center">
+                            <Label
+                                htmlFor="camera-file"
+                                className="flex h-8 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                            >
+                                Camera
+                                <input id="camera-file" type="file" accept="image/*" capture="environment" onChange={handleImageChange} className="hidden" />
+                            </Label>
+                        </div>
                     </div>
 
 

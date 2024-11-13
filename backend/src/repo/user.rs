@@ -1,5 +1,6 @@
 use actix_web::web;
 use sqlx::Acquire;
+use tracing::error;
 use uuid::Uuid;
 
 use crate::{
@@ -115,7 +116,7 @@ impl UserRepo {
     {
         let mut connection = connection.acquire().await?;
 
-        let mut old_image = sqlx::query!(
+        let old_image = sqlx::query!(
             r#"
             SELECT profile_picture
             FROM users
@@ -129,7 +130,11 @@ impl UserRepo {
         // Delete old image. Ignore if it fails
         if let Some(file_path) = old_image.profile_picture {
             web::block(|| {
-                std::fs::remove_file(file_path).ok();
+                std::fs::remove_file(format!(".{}",file_path))
+                    .map_err(move |e| {
+                        error!("Failed to delete old image '{}': {}", file_path, e);
+                    })
+                    .ok();
             })
             .await
             .ok();
