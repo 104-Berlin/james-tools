@@ -43,7 +43,7 @@ export default function Profile() {
                     </div>
                     <div className="flex-grow" />
                     <div>
-                        <img src={user.profilePicture ?? "empty_pp.webp"} style={{ width: "100px", height: "100px" }} />
+                        <img src={user.profilePicture ?? "empty_pp.webp"} className="h-32 w-32 object-cover" />
 
                         <div className="flex w-full items-center justify-center">
                             <Label
