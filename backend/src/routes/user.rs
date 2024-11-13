@@ -1,11 +1,10 @@
-use actix_files::NamedFile;
 use actix_multipart::Multipart;
-use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder};
+use actix_web::{get, post, web, HttpResponse};
 use chrono::{Duration, Utc};
 use futures::StreamExt as _;
 use sqlx::PgPool;
 use std::io::Write;
-use tracing::{info, warn};
+use tracing::info;
 use uuid::Uuid;
 
 use crate::{
