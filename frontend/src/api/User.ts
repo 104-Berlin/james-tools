@@ -21,5 +21,5 @@ export function register(input: RegisterForm): Promise<AxiosResponse<string>> {
 }
 
 export function login(input: LoginForm): Promise<AxiosResponse<string>> {
-    return axios.post("/api/user/login", { email_or_user: input.email_or_user, password: input.password });
+    return axios.post("/api/user/login", { emailOrUser: input.emailOrUser, password: input.password });
 }
