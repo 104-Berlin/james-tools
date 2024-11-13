@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios";
-import { register } from "../api/Register";
 import Form, { FormInputType, InputType } from "../components/Form"
 import { useAuth } from "../provider/AuthProvider";
 import { useNavigate } from "react-router";
+import { register } from "../api/User";
 
 export type RegisterForm = {
     username: string;

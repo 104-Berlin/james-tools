@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
-import { login } from "../api/Login";
 import Form, { FormInputType, InputType } from "../components/Form";
 import { useAuth } from "../provider/AuthProvider";
+import { login } from "../api/User";
 
 export type LoginForm = {
     email_or_user: string;
