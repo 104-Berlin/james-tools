@@ -31,3 +31,7 @@ export function addMonthly(body: AddMonthly) {
 export function updateMonthly(body: UpdateMonthly) {
     return axios.patch("/api/budget/monthly", body);
 }
+
+export function deleteMonthly(id: string) {
+    return axios.delete(`/api/budget/monthly/${id}`);
+}

@@ -1,8 +1,9 @@
 {
-    "Home": "Home",
-    "Login": "Einloggen",
-    "Register": "Registrieren",
-    "Logout": "Ausloggen",
-    "Budget": "Budget",
-    "Profile": "Profil"
+    "home": "Home",
+    "login": "Einloggen",
+    "register": "Registrieren",
+    "logout": "Ausloggen",
+    "budget": "Budget",
+    "profile": "Profil",
+    "delete": "Löschen"
 }

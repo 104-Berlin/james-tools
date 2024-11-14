@@ -16,22 +16,22 @@ function Header() {
             <Navbar.Toggle />
             <Navbar.Collapse>
                 <Navbar.Link href="/">
-                    {t("Home")}
+                    {t("home")}
                 </Navbar.Link>
                 <ProtectedRoute>
                     <Navbar.Link href="/budget">
-                        {t("Budget")}
+                        {t("budget")}
                     </Navbar.Link>
                     <Navbar.Link href="/profile">
-                        {t("Profile")}
+                        {t("profile")}
                     </Navbar.Link>
                 </ProtectedRoute>
                 <ProtectedRoute not_authenticated>
                     <Navbar.Link href="/login">
-                        {t("Login")}
+                        {t("login")}
                     </Navbar.Link>
                     <Navbar.Link href="/register">
-                        {t("Register")}
+                        {t("register")}
                     </Navbar.Link>
                 </ProtectedRoute>
                 <ProtectedRoute>
@@ -41,7 +41,7 @@ function Header() {
                         setToken();
                         window.location.href = "/";
                     }}>
-                        {t("Logout")}
+                        {t("logout")}
                     </Navbar.Link>
                 </ProtectedRoute>
                 <Dropdown label={i18n.language}>

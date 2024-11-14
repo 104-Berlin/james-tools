@@ -3,14 +3,15 @@ use tracing::info;
 use uuid::Uuid;
 
 use crate::{
-    error::Result,
+    auth::Claims,
+    error::{Error, Result},
     models::budget::{Monthly, MonthlyAdd, MonthlyUpdate},
 };
 
 pub struct BudgetRepo;
 
 impl BudgetRepo {
-    pub async fn monthly_get_all<'a, A>(connection: A, usere_id: &Uuid) -> Result<Vec<Monthly>>
+    pub async fn monthly_get_all<'a, A>(connection: A, claims: Claims) -> Result<Vec<Monthly>>
     where
         A: Acquire<'a, Database = sqlx::Postgres>,
     {
@@ -25,7 +26,7 @@ impl BudgetRepo {
             WHERE user_id = $1
             ORDER BY monthly.id
             "#,
-            usere_id
+            claims.sub
         )
         .fetch_all(connection.as_mut())
         .await?;
@@ -35,7 +36,7 @@ impl BudgetRepo {
 
     pub async fn insert_monthly<'a, A>(
         connection: A,
-        user_id: &Uuid,
+        claims: Claims,
         monthly: MonthlyAdd,
     ) -> Result<()>
     where
@@ -61,7 +62,7 @@ impl BudgetRepo {
             INSERT INTO user_monthly (user_id, monthly_id)
             VALUES ($1, $2)
             "#,
-            user_id,
+            claims.sub,
             id.id
         )
         .execute(connection.as_mut())
@@ -72,12 +73,19 @@ impl BudgetRepo {
         Ok(())
     }
 
-    pub async fn update_monthly<'a, A>(connection: A, entry: MonthlyUpdate) -> Result<()>
+    pub async fn update_monthly<'a, A>(
+        connection: A,
+        claims: Claims,
+        entry: MonthlyUpdate,
+    ) -> Result<()>
     where
         A: Acquire<'a, Database = sqlx::Postgres>,
     {
-        let mut connection = connection.acquire().await?;
-        info!("Updating monthly entry: {:?}", entry);
+        let mut connection = connection.begin().await?;
+
+        if !BudgetRepo::monthly_is_users(connection.as_mut(), entry.id, claims.sub).await? {
+            return Err(Error::Unauthorized);
+        }
 
         sqlx::query!(
             r#"
@@ -94,6 +102,8 @@ impl BudgetRepo {
         )
         .execute(connection.as_mut())
         .await?;
+
+        connection.commit().await?;
 
         Ok(())
     }
@@ -123,5 +133,47 @@ impl BudgetRepo {
         .await?;
 
         Ok(is_users.is_users.unwrap_or(false))
+    }
+
+    pub async fn delete_monthly<'a, A>(
+        connection: A,
+        claims: Claims,
+        monthly_id: Uuid,
+    ) -> Result<()>
+    where
+        A: Acquire<'a, Database = sqlx::Postgres>,
+    {
+        let mut connection = connection.begin().await?;
+
+        if !Self::monthly_is_users(connection.as_mut(), monthly_id, claims.sub).await? {
+            return Err(Error::Unauthorized);
+        }
+
+        info!("Deleting monthly entry {}", monthly_id);
+
+        sqlx::query!(
+            r#"
+            DELETE FROM user_monthly
+            WHERE user_id = $1 AND monthly_id = $2
+            "#,
+            claims.sub,
+            monthly_id
+        )
+        .execute(connection.as_mut())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            DELETE FROM monthly
+            WHERE id = $1
+            "#,
+            monthly_id
+        )
+        .execute(connection.as_mut())
+        .await?;
+
+        connection.commit().await?;
+
+        Ok(())
     }
 }

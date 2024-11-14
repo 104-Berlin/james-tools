@@ -1,10 +1,10 @@
-use actix_web::{get, patch, post, web, HttpResponse};
+use actix_web::{delete, get, patch, post, web, HttpResponse};
 use sqlx::PgPool;
-use tracing::info;
+use uuid::Uuid;
 
 use crate::{
     auth::Claims,
-    error::{Error, Result},
+    error::Result,
     models::budget::{Monthly, MonthlyAdd, MonthlyUpdate},
     repo::budget::BudgetRepo,
 };
@@ -13,7 +13,7 @@ use crate::{
 pub async fn get_all(pool: web::Data<PgPool>, claims: Claims) -> Result<web::Json<Vec<Monthly>>> {
     let mut connection = pool.acquire().await?;
 
-    BudgetRepo::monthly_get_all(connection.as_mut(), &claims.sub)
+    BudgetRepo::monthly_get_all(connection.as_mut(), claims)
         .await
         .map(web::Json)
 }
@@ -26,7 +26,7 @@ pub async fn add(
 ) -> Result<HttpResponse> {
     let mut connection = pool.acquire().await?;
 
-    BudgetRepo::insert_monthly(connection.as_mut(), &claims.sub, monthly.into_inner()).await?;
+    BudgetRepo::insert_monthly(connection.as_mut(), claims, monthly.into_inner()).await?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -37,15 +37,22 @@ pub async fn update(
     claims: Claims,
     monthly: web::Json<MonthlyUpdate>,
 ) -> Result<HttpResponse> {
+    let mut connection = pool.acquire().await?;
+
+    BudgetRepo::update_monthly(connection.as_mut(), claims, monthly.into_inner()).await?;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
+#[delete("/monthly/{id}")]
+pub async fn delete_monthly(
+    pool: web::Data<PgPool>,
+    claims: Claims,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse> {
     let mut connection = pool.begin().await?;
 
-    let monthly = monthly.into_inner();
-
-    if !BudgetRepo::monthly_is_users(connection.as_mut(), monthly.id, claims.sub).await? {
-        return Err(Error::Unauthorized);
-    }
-
-    BudgetRepo::update_monthly(connection.as_mut(), monthly).await?;
+    BudgetRepo::delete_monthly(connection.as_mut(), claims, *id).await?;
 
     connection.commit().await?;
 

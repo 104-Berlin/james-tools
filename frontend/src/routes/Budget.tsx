@@ -1,7 +1,7 @@
 import { Tabs } from "flowbite-react";
 import { useTranslation } from "react-i18next";
 import Form, { FormInputType, InputType } from "../components/Form";
-import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly } from "../api/Budget";
+import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly, deleteMonthly } from "../api/Budget";
 import { useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 
@@ -63,6 +63,16 @@ function Monthly(props: MonthlyProps) {
                         { key: "credit", label: t("credit"), canEdit: true }
                     ]}
                     data={budgets}
+                    onDelete={(row_index) => {
+                        let row = budgets[row_index];
+
+                        // Update state
+                        let newBudgets = [...budgets];
+                        newBudgets.splice(row_index, 1);
+                        setBudgets(newBudgets);
+
+                        deleteMonthly(row.id.toString());
+                    }}
                     onEdit={(row_index, key, value) => {
                         console.log("Edit", row_index, key, value);
 

@@ -16,6 +16,7 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
         Scope::new("/budget")
             .service(budget::get_all)
             .service(budget::add)
-            .service(budget::update),
+            .service(budget::update)
+            .service(budget::delete_monthly),
     );
 }
