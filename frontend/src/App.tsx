@@ -6,6 +6,7 @@ import Home from "./routes/Home";
 import Profile from "./routes/Profile";
 import Register from "./routes/Register";
 import Login from "./routes/Login";
+import Budget from "./routes/Budget";
 
 function App() {
   const router = createBrowserRouter([
@@ -16,6 +17,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/budget",
+      element: <Budget />,
     },
     {
       path: "/login",

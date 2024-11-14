@@ -13,22 +13,22 @@ export type RegisterForm = {
 
 const form: FormInputType[] = [
     {
-        name: "username",
+        key: "username",
         type: InputType.TEXT,
         label: "Username",
     },
     {
-        name: "email",
+        key: "email",
         type: InputType.EMAIL,
         label: "Email",
     },
     {
-        name: "password",
+        key: "password",
         type: InputType.PASSWORD,
         label: "Password",
     },
     {
-        name: "confirm_password",
+        key: "confirm_password",
         type: InputType.PASSWORD,
         label: "Confirm Password",
     }

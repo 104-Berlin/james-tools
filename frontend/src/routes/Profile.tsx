@@ -45,13 +45,14 @@ export default function Profile() {
                     <div className="max-w-md space-y-4 p-8 rounded-lg border-2">
                         <h1>Welcome, {user.username}!</h1>
                         <h2>Your email is {user.email}</h2>
-                        <EditField value={user.firstName} onChange={(value) => {
-                            updateCurrentUser({ firstName: value }).then(() => {
+                        <EditField key="first_name" value={user.firstName} onChange={(value) => {
+                            console.log("Updating first name to: ", value);
+                            updateCurrentUser({ firstName: value.toString() }).then(() => {
                                 setUser({ ...user, firstName: value } as User);
                             });
                         }} />
-                        <EditField value={user.lastName} onChange={(value) => {
-                            updateCurrentUser({ lastName: value }).then(() => {
+                        <EditField key="last_name" value={user.lastName} onChange={(value) => {
+                            updateCurrentUser({ lastName: value.toString() }).then(() => {
                                 setUser({ ...user, lastName: value } as User);
                             });
                         }} />

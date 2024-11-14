@@ -17,6 +17,9 @@ pub enum Error {
     #[error("Invalid password")]
     InvalidPassword,
 
+    #[error("Unauthorized")]
+    Unauthorized,
+
     #[error("User not found")]
     UserNotFound,
 
@@ -30,7 +33,9 @@ impl ResponseError for Error {
             Error::DatabaseError(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
             Error::IoError(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
             Error::AuthenticationError(_) => actix_web::http::StatusCode::UNAUTHORIZED,
-            Error::InvalidPassword => actix_web::http::StatusCode::UNAUTHORIZED,
+            Error::InvalidPassword | Error::Unauthorized => {
+                actix_web::http::StatusCode::UNAUTHORIZED
+            }
             Error::UserNotFound | Error::NoProfilePicture => actix_web::http::StatusCode::NOT_FOUND,
         }
     }

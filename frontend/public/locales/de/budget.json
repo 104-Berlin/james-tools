@@ -1,0 +1,8 @@
+{
+    "position": "Bezeichnung",
+    "debit": "Soll (-)",
+    "credit": "Haben (+)",
+    "overview": "Übersicht",
+    "monthly": "Monatlich",
+    "position_preview": "zB. Miete, Gehalt, ..."
+}

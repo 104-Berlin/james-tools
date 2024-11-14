@@ -26,12 +26,12 @@ export default function Login() {
 
     const form: FormInputType[] = [
         {
-            name: "emailOrUser",
+            key: "emailOrUser",
             type: InputType.TEXT,
             label: "Email or Username",
         },
         {
-            name: "password",
+            key: "password",
             type: InputType.PASSWORD,
             label: "Password",
         }

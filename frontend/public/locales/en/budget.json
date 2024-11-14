@@ -1,0 +1,8 @@
+{
+    "position": "Position",
+    "debit": "Debit (-)",
+    "credit": "Credit (+)",
+    "overview": "Overview",
+    "monthly": "Monthly",
+    "position_preview": "eg. Rent, Salary, ..."
+}

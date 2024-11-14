@@ -1,6 +1,7 @@
 use actix_web::{web, Scope};
 
-pub mod user;
+mod budget;
+mod user;
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -10,5 +11,11 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             .service(user::upload_picture)
             .service(user::login)
             .service(user::register),
+    );
+    cfg.service(
+        Scope::new("/budget")
+            .service(budget::get_all)
+            .service(budget::add)
+            .service(budget::update),
     );
 }

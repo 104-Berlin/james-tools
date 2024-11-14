@@ -5,7 +5,7 @@ export enum InputType {
     TEXT = "text",
     EMAIL = "email",
     PASSWORD = "password",
-    // NUMBER = "number",
+    NUMBER = "number",
     // DATE = "date",
     // TIME = "time",
     // DATETIME = "datetime-local",
@@ -29,14 +29,15 @@ export enum InputType {
 }
 
 export type FormInputType = {
-    name: string;
+    key: string;
     type: InputType;
     label?: string;
+    placeholder?: string;
 }
 
-function FormInput<T>(type: FormInputType, value: T, setState: Dispatch<SetStateAction<T>>) {
+export function FormInput(type: FormInputType, value: string | number | undefined, onUpdate: (value: number | string | undefined) => void) {
     let label = type.label && (
-        <label htmlFor={type.name}>
+        <label htmlFor={type.key}>
             {type.label}
         </label>
     );
@@ -51,22 +52,56 @@ function FormInput<T>(type: FormInputType, value: T, setState: Dispatch<SetState
         case InputType.PASSWORD:
             input_type = "password";
             break;
+        case InputType.NUMBER:
+            input_type = "number";
+            break;
     }
 
-    let disp_value = value[type.name as keyof T] as string | number | undefined;
+    let [displayValue, setDisplayValue] = useState(value?.toString());
+
     let setValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setState({ ...value, [type.name]: e.target.value } as T);
+        setDisplayValue(e.target.value);
     }
 
-    if (disp_value === undefined) {
-        disp_value = "";
+    let submit = () => {
+        let currentValue: string | number | undefined = displayValue;
+
+        if (type.type === InputType.NUMBER) {
+            currentValue = parseFloat(displayValue ?? "0");
+            if (displayValue?.length === 0) {
+                currentValue = 0;
+            }
+
+            if (isNaN(currentValue)) {
+                currentValue = value;
+            }
+        }
+        setDisplayValue(currentValue?.toString());
+        onUpdate(currentValue);
+    };
+
+    if (displayValue === undefined) {
+        displayValue = "";
+        if (type.type === InputType.NUMBER) {
+            displayValue = "0";
+        }
     }
 
 
     return (
-        <div>
+        <div key={type.key}>
             {label}
-            <TextInput id={type.name} type={input_type} name={type.name} value={disp_value} onChange={setValue} />
+            <TextInput
+                id={type.key}
+                key={type.key}
+                type={input_type}
+                name={type.key}
+                value={displayValue}
+                placeholder={type.placeholder}
+                onChange={setValue}
+                onBlur={submit}
+                onKeyDown={(e) => { if (e.key === 'Enter') { submit() } }}
+                onSubmit={submit} />
         </div>
     )
 }
@@ -83,9 +118,21 @@ export type FormProps<T> = {
 export default function Form<T>(props: FormProps<T>) {
     let [value, setValue] = useState(props.defaultValue ?? {} as T);
 
+    const updateValue = (key: string) => (value: string | number | undefined) => {
+        setValue((prev) => {
+            return {
+                ...prev,
+                [key]: value
+            } as T;
+        });
+    }
+
     return (
         <div className={props.className}>
-            {props.value_type.map((type) => FormInput<T>(type, value, setValue))}
+            {props.value_type.map((type) => {
+                let value = (props.defaultValue as any)?.[type.key];
+                return FormInput(type, value, updateValue(type.key));
+            })}
             <Button onClick={() => props.onSubmit(value)} className="w-full mt-4" size="sm">
                 {props.submit ?? "Submit"}
             </Button>

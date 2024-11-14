@@ -1,9 +1,12 @@
-import { Navbar } from "flowbite-react";
+import { Dropdown, Navbar } from "flowbite-react";
 import { useAuth } from "../provider/AuthProvider";
 import { ProtectedRoute } from "../routes/ProtectedRoute";
+import { useTranslation } from "react-i18next";
 
 function Header() {
     const { setToken } = useAuth();
+    const { t, i18n } = useTranslation();
+
 
     return (
         <Navbar>
@@ -13,19 +16,22 @@ function Header() {
             <Navbar.Toggle />
             <Navbar.Collapse>
                 <Navbar.Link href="/">
-                    Home
+                    {t("Home")}
                 </Navbar.Link>
                 <ProtectedRoute>
+                    <Navbar.Link href="/budget">
+                        {t("Budget")}
+                    </Navbar.Link>
                     <Navbar.Link href="/profile">
-                        Profile
+                        {t("Profile")}
                     </Navbar.Link>
                 </ProtectedRoute>
                 <ProtectedRoute not_authenticated>
                     <Navbar.Link href="/login">
-                        Login
+                        {t("Login")}
                     </Navbar.Link>
                     <Navbar.Link href="/register">
-                        Register
+                        {t("Register")}
                     </Navbar.Link>
                 </ProtectedRoute>
                 <ProtectedRoute>
@@ -35,9 +41,17 @@ function Header() {
                         setToken();
                         window.location.href = "/";
                     }}>
-                        Logout
+                        {t("Logout")}
                     </Navbar.Link>
                 </ProtectedRoute>
+                <Dropdown label={i18n.language}>
+                    <Dropdown.Item onClick={() => { i18n.changeLanguage("en") }}>
+                        en
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => { i18n.changeLanguage("de") }}>
+                        de
+                    </Dropdown.Item>
+                </Dropdown>
             </Navbar.Collapse>
         </Navbar>
     )
