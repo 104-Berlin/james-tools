@@ -26,7 +26,7 @@ export type RowData = {
 
 export default function DataTable(props: DataTableProps) {
     return (
-        <Table className="table-fixed">
+        <Table className="table-fixed" hoverable>
             <Table.Head>
                 {props.columns.map((column) => {
                     return (
@@ -36,10 +36,11 @@ export default function DataTable(props: DataTableProps) {
                     )
                 })}
             </Table.Head>
-            <Table.Body>
+            <Table.Body className="divide-y divide-x">
                 {props.data.map((row, index) => {
                     return (
-                        <Table.Row key={`DataTableRow_${index}`}>
+                        <Table.Row key={`DataTableRow_${index}`}
+                            className="bg-white dark:border-gray-700 dark:bg-gray-800">
                             {props.columns.map((column) => {
                                 return (
                                     <TableCell ident={`DataTableRow_${index}___Cell_${column.key}`}

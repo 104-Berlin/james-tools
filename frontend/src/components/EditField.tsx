@@ -1,6 +1,5 @@
-import { Button, TextInput } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
-import { InputType } from "./Form";
 
 export type EditFieldProps = {
     key: string;
@@ -30,7 +29,7 @@ export default function EditField(props: EditFieldProps) {
         if (editing) {
             let updateValue: number | string = editValue;
             if (type == "number") {
-                let num = parseFloat(editValue);
+                let num = parseFloat(editValue === "" ? "0" : editValue);
                 if (isNaN(num)) {
                     updateValue = props.value;
                 } else {
@@ -49,11 +48,11 @@ export default function EditField(props: EditFieldProps) {
         }
     }, [editing]);
 
-    let sizing_class = "p-0 ";
+    let sizing_class = " p-0 ";
     if (props.sizing) {
         switch (props.sizing!) {
             case "xs":
-                sizing_class += "max-w-full ";
+                sizing_class += "border-none focus:outline-none ";
                 break;
             case "sm":
                 sizing_class += "w-24 h-8";
@@ -88,7 +87,7 @@ export default function EditField(props: EditFieldProps) {
                 onBlur={submit}
                 onSubmit={submit}
                 ref={inputRef}
-                className={"text-xs border-none  " + sizing_class}
+                className={"text-sm " + sizing_class}
             />
 
             {(!!props.minimal || editing) ? null :
