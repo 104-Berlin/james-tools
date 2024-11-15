@@ -124,7 +124,7 @@ function TableCell({ ident, input_value, canEdit, onEdit }: TableCellProps) {
     return (
         <Table.Cell>
             {canEdit ? (
-                <EditField id={ident} sizing="xs" minimal value={input_value} onSubmit={onEdit} />
+                <EditField id={ident} style="normal" alwaysEdit value={input_value} onSubmit={onEdit} />
             ) : (
                 <div key={ident}>{input_value}</div>
             )}

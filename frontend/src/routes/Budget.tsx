@@ -144,9 +144,9 @@ function AddMonthlyModal(props: AddMonthlyProps) {
         <Modal show={props.open} onClose={() => { clearInput(); props.onSubmit?.() }} onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); submit(); } }}>
             <Modal.Header>{t("add_monthly")}</Modal.Header>
             <Modal.Body>
-                <EditField autoFocus alwaysEdit minimal label={t("position")} value={position} onChange={(v) => setPosition(v as string)} />
-                <EditField alwaysEdit minimal label={t("debit")} value={debit} onChange={(v) => setDebit(v as number)} />
-                <EditField alwaysEdit minimal label={t("credit")} value={credit} onChange={(v) => setCredit(v as number)} />
+                <EditField style="normal" autoFocus alwaysEdit label={t("position")} value={position} onChange={(v) => setPosition(v as string)} />
+                <EditField style="normal" alwaysEdit label={t("debit")} value={debit} onChange={(v) => setDebit(v as number)} />
+                <EditField style="normal" alwaysEdit label={t("credit")} value={credit} onChange={(v) => setCredit(v as number)} />
             </Modal.Body>
             <Modal.Footer>
                 <Button color="success" onClick={submit}>{t("add_monthly")}</Button>

@@ -45,13 +45,13 @@ export default function Profile() {
                     <div className="max-w-md space-y-4 p-8 rounded-lg border-2">
                         <h1>Welcome, {user.username}!</h1>
                         <h2>Your email is {user.email}</h2>
-                        <EditField id="first_name" value={user.firstName} onSubmit={(value) => {
+                        <EditField style="button" id="first_name" label="Test" value={user.firstName} onSubmit={(value) => {
                             console.log("Updating first name to: ", value);
                             updateCurrentUser({ firstName: value.toString() }).then(() => {
                                 setUser({ ...user, firstName: value } as User);
                             });
                         }} />
-                        <EditField id="last_name" value={user.lastName} onSubmit={(value) => {
+                        <EditField style="button" id="last_name" value={user.lastName} onSubmit={(value) => {
                             updateCurrentUser({ lastName: value.toString() }).then(() => {
                                 setUser({ ...user, lastName: value } as User);
                             });
