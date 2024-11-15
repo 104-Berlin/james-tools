@@ -121,11 +121,10 @@ type TableCellProps = {
 }
 
 function TableCell({ ident, input_value, canEdit, onEdit }: TableCellProps) {
-    console.log("Table cell key: ", ident)
     return (
         <Table.Cell>
             {canEdit ? (
-                <EditField sizing="xs" minimal value={input_value} onSubmit={onEdit} />
+                <EditField id={ident} sizing="xs" minimal value={input_value} onSubmit={onEdit} />
             ) : (
                 <div key={ident}>{input_value}</div>
             )}

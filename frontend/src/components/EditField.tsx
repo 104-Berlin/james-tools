@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 export type EditFieldProps = {
     value: string | number;
+    id?: string;
     label?: string;
 
     // Will hide the controlls.
@@ -88,13 +89,14 @@ export default function EditField(props: EditFieldProps) {
         </div>
     }
 
+    let id = props.id ?? "edit_field";
 
     return (
         <div className={sizing_class_div}>
-            {props.label ? <label htmlFor="this_input_label" className="mr-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label}</label> : null}
+            {props.label ? <label htmlFor={id} className="mr-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label}</label> : null}
 
             <input
-                id="this_input_label"
+                id={id}
                 value={editing ? editValue : props.value}
                 disabled={!editing}
                 autoFocus={props.autoFocus}
