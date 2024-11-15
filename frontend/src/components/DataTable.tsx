@@ -49,7 +49,7 @@ export default function DataTable(props: DataTableProps) {
                 <div className="flex-grow" />
                 {props.onAdd && (<Button color="blue" onClick={props.onAdd}>{t("add")}</Button>)}
             </div>
-            <Table className="table-fixed" hoverable>
+            <Table hoverable>
                 <Table.Head>
                     {showSelection && (
                         <Table.HeadCell className="shrink" key="DataTableHeaderSelection">
