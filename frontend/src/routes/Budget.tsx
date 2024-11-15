@@ -70,7 +70,9 @@ function Monthly(props: MonthlyProps) {
                         // Update state
                         let newBudgets = [...budgets];
 
-                        newBudgets = newBudgets.filter((_, row) => !row_index.includes(row));
+                        let quickLookup = new Set(row_index);
+
+                        newBudgets = newBudgets.filter((_, row) => !quickLookup.has(row));
                         setBudgets(newBudgets);
 
                         deleteMonthly(rows.map((row) => row.id.toString()));
