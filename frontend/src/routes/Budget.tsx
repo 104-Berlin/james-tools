@@ -66,6 +66,10 @@ function Monthly(_: MonthlyProps) {
                         { key: "credit", label: t("credit"), canEdit: true }
                     ]}
                     data={budgets}
+                    footer={budgets.reduce((acc, row) => {
+                        return { ...acc, position: acc.position + row.credit - row.debit, credit: acc.credit + row.credit, debit: acc.debit + row.debit }
+                    }, { credit: 0, debit: 0, id: "footer_row", position: 0 })
+                    }
                     onDelete={(row_index) => {
                         let rows = row_index.map((index) => budgets[index])
 

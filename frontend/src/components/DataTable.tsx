@@ -7,6 +7,8 @@ export type DataTableProps = {
     columns: HeaderCell[];
     data: RowData[];
 
+    footer?: RowData;
+
     resizable?: boolean;
 
     onAdd?: () => void;
@@ -108,6 +110,21 @@ export default function DataTable(props: DataTableProps) {
                             </Table.Row>
                         )
                     })}
+                    {props.footer && (
+                        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                            {showSelection && (
+                                <Table.Cell className="shrink">
+                                </Table.Cell>
+                            )}
+                            {props.columns.map((column) => {
+                                return (
+                                    <Table.Cell className="text-right" key={`Footer_${column.key}`}>
+                                        {column.key === "id" ? "" : props.footer![column.key]}
+                                    </Table.Cell>
+                                )
+                            })}
+                        </Table.Row>
+                    )}
                 </Table.Body>
             </Table>
         </div>
