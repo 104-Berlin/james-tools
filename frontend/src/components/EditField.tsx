@@ -52,7 +52,7 @@ export default function EditField(props: EditFieldProps) {
     if (props.sizing) {
         switch (props.sizing!) {
             case "xs":
-                sizing_class += "border-none focus:outline-none ";
+                sizing_class += " max-w-full border-none focus:outline-none ";
                 break;
             case "sm":
                 sizing_class += "w-24 h-8";
