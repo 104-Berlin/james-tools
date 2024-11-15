@@ -1,4 +1,4 @@
-import { Tabs } from "flowbite-react";
+import { Modal, Tabs } from "flowbite-react";
 import { useTranslation } from "react-i18next";
 import Form, { FormInputType, InputType } from "../components/Form";
 import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly, deleteMonthly } from "../api/Budget";
@@ -42,6 +42,7 @@ type MonthlyProps = {
 function Monthly(props: MonthlyProps) {
     let { t } = useTranslation("budget");
     let [budgets, setBudgets] = useState<TMonthly[]>([]);
+    let [addModalOpen, setAddModalOpen] = useState(false);
 
     const fetchBudgets = () => {
         getMonthly().then((res) => {
@@ -54,7 +55,7 @@ function Monthly(props: MonthlyProps) {
     }, []);
 
     return (
-        <div className="grid grid-cols-2 w-screen items-start justify-center">
+        <div className="w-screen items-start justify-center">
             <div className="p-4">
                 <DataTable
                     columns={[
@@ -77,6 +78,7 @@ function Monthly(props: MonthlyProps) {
 
                         deleteMonthly(rows.map((row) => row.id.toString()));
                     }}
+                    onAdd={() => { setAddModalOpen(true) }}
                     onEdit={(row_index, key, value) => {
                         console.log("Edit", row_index, key, value);
 
@@ -96,9 +98,12 @@ function Monthly(props: MonthlyProps) {
                         })
                     }} />
             </div>
-            <div className="flex justify-center p-4 w-full m-0">
-                <AddMonthly onSubmit={fetchBudgets} />
-            </div>
+            <Modal show={addModalOpen} onClose={() => setAddModalOpen(false)}>
+                <AddMonthly onSubmit={() => {
+                    setAddModalOpen(false);
+                    fetchBudgets();
+                }} />
+            </Modal>
         </div>
     )
 }

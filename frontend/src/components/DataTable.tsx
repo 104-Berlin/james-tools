@@ -9,6 +9,7 @@ export type DataTableProps = {
 
     resizable?: boolean;
 
+    onAdd?: () => void;
     onDelete?: (row_index: number[]) => void;
     onEdit?: (row_index: number, key: string, value: number | string) => void;
 }
@@ -45,6 +46,8 @@ export default function DataTable(props: DataTableProps) {
                         }}>{`${t("delete")} ${selectedRows.length === 0 ? "" : `(${selectedRows.length})`}`}</Button>
                     </div>
                 )}
+                <div className="flex-grow" />
+                {props.onAdd && (<Button color="blue" onClick={props.onAdd}>{t("add")}</Button>)}
             </div>
             <Table className="table-fixed" hoverable>
                 <Table.Head>
