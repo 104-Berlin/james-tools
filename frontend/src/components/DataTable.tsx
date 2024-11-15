@@ -37,12 +37,12 @@ export default function DataTable(props: DataTableProps) {
             <div className="flex justify-start">
                 {showSelection && (
                     <div>
-                        <Button color="failure" onClick={() => {
+                        <Button color="failure" disabled={selectedRows.length === 0} onClick={() => {
                             if (props.onDelete && selectedRows.length > 0) {
                                 props.onDelete(selectedRows);
                                 setSelectedRows([]);
                             }
-                        }}>{`${t("delete")} (${selectedRows.length})`}</Button>
+                        }}>{`${t("delete")} ${selectedRows.length === 0 ? "" : `(${selectedRows.length})`}`}</Button>
                     </div>
                 )}
             </div>
