@@ -35,7 +35,7 @@ export default function DataTable(props: DataTableProps) {
 
     return (
         <div>
-            <div className="flex justify-start">
+            <div className="flex justify-start mb-8 mx-4">
                 {showSelection && (
                     <div>
                         <Button color="failure" disabled={selectedRows.length === 0} onClick={() => {
@@ -52,7 +52,7 @@ export default function DataTable(props: DataTableProps) {
             <Table className="table-fixed" hoverable>
                 <Table.Head>
                     {showSelection && (
-                        <Table.HeadCell key="DataTableHeaderSelection">
+                        <Table.HeadCell className="shrink" key="DataTableHeaderSelection">
                             <Checkbox checked={selectedRows.length === props.data.length && selectedRows.length > 0} onChange={(e) => {
                                 if (e.target.checked) {
                                     setSelectedRows([...Array(props.data.length).keys()]);
@@ -70,13 +70,14 @@ export default function DataTable(props: DataTableProps) {
                         )
                     })}
                 </Table.Head>
-                <Table.Body className="divide-y divide-x">
+                <Table.Body key="body" className="divide-y divide-x">
                     {props.data.map((row, index) => {
+                        console.log("Rendnering row: ", row);
                         return (
-                            <Table.Row key={index}
+                            <Table.Row key={`ROW_${index}`}
                                 className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 {showSelection && (
-                                    <Table.Cell key={`${index}Checkbox_Cell`} >
+                                    <Table.Cell className="shrink" key={`${index}Checkbox_Cell`} >
                                         <Checkbox checked={selectedRows.find((r) => r === index) != undefined} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                             if (e.target.checked) {
                                                 setSelectedRows([...selectedRows, index]);
@@ -90,7 +91,9 @@ export default function DataTable(props: DataTableProps) {
                                 {
                                     props.columns.map((column) => {
                                         return (
-                                            <TableCell ident={`${index}${column.key}`}
+                                            <TableCell
+                                                key={`${index}${column.key}`}
+                                                ident={`${index}${column.key}`}
                                                 input_value={row[column.key] ?? ""}
                                                 canEdit={column.canEdit ?? false}
                                                 onEdit={(value) => {
@@ -118,13 +121,14 @@ type TableCellProps = {
 }
 
 function TableCell({ ident, input_value, canEdit, onEdit }: TableCellProps) {
+    console.log("Table cell key: ", ident)
     return (
-        <Table.Cell id={ident} key={ident}>
+        <Table.Cell>
             {canEdit ? (
-                <EditField id={ident} sizing="xs" minimal value={input_value} onChange={onEdit} />
+                <EditField sizing="xs" minimal value={input_value} onSubmit={onEdit} />
             ) : (
                 <div key={ident}>{input_value}</div>
             )}
-        </Table.Cell >
+        </Table.Cell>
     )
 }

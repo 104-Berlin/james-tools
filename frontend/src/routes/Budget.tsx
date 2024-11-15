@@ -1,9 +1,9 @@
-import { Modal, Tabs } from "flowbite-react";
+import { Button, Modal, Tabs } from "flowbite-react";
 import { useTranslation } from "react-i18next";
-import Form, { FormInputType, InputType } from "../components/Form";
 import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly, deleteMonthly } from "../api/Budget";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
+import EditField from "../components/EditField";
 
 
 export default function Budget() {
@@ -27,7 +27,7 @@ export default function Budget() {
 type OverviewProps = {
 }
 
-function Overview(props: OverviewProps) {
+function Overview(_: OverviewProps) {
     return (
         <div>
 
@@ -39,10 +39,11 @@ type MonthlyProps = {
 
 }
 
-function Monthly(props: MonthlyProps) {
-    let { t } = useTranslation("budget");
-    let [budgets, setBudgets] = useState<TMonthly[]>([]);
-    let [addModalOpen, setAddModalOpen] = useState(false);
+function Monthly(_: MonthlyProps) {
+    const { t } = useTranslation("budget");
+    const [budgets, setBudgets] = useState<TMonthly[]>([]);
+    const [addModalOpen, setAddModalOpen] = useState(false);
+
 
     const fetchBudgets = () => {
         getMonthly().then((res) => {
@@ -55,7 +56,7 @@ function Monthly(props: MonthlyProps) {
     }, []);
 
     return (
-        <div className="w-screen items-start justify-center">
+        <div className="w-screen items-start justify-center py-4 px-32">
             <div className="p-4">
                 <DataTable
                     columns={[
@@ -98,59 +99,58 @@ function Monthly(props: MonthlyProps) {
                         })
                     }} />
             </div>
-            <Modal show={addModalOpen} onClose={() => setAddModalOpen(false)}>
-                <AddMonthly onSubmit={() => {
-                    setAddModalOpen(false);
-                    fetchBudgets();
-                }} />
-            </Modal>
+
+            <AddMonthlyModal open={addModalOpen} onSubmit={() => {
+                setAddModalOpen(false);
+                fetchBudgets();
+            }} />
         </div>
     )
 }
 
-type AddMonthlyForm = {
-    position: string;
-    debit: number;
-    credit: number;
-}
 
 type AddMonthlyProps = {
+    open?: boolean;
+
     onSubmit?: () => void;
 }
 
-function AddMonthly(props: AddMonthlyProps) {
+function AddMonthlyModal(props: AddMonthlyProps) {
     const { t } = useTranslation("budget");
 
-    const form: FormInputType[] = [
-        {
-            key: "position",
-            type: InputType.TEXT,
-            label: t("position"),
-            placeholder: t("position_preview")
-        },
-        {
-            key: "debit",
-            type: InputType.NUMBER,
-            label: t("debit")
-        },
-        {
-            key: "credit",
-            type: InputType.NUMBER,
-            label: t("credit")
-        }
-    ];
+    const [position, setPosition] = useState("");
+    const [debit, setDebit] = useState(0);
+    const [credit, setCredit] = useState(0);
+
+    let clearInput = () => {
+        setPosition("");
+        setDebit(0);
+        setCredit(0);
+    }
+
+    let submit = () => {
+        addMonthly({
+            position: position,
+            debit: debit,
+            credit: credit
+        }).then(() => {
+            props.onSubmit?.();
+            clearInput();
+        });
+
+    };
 
     return (
-        <Form value_type={form} onSubmit={(v: AddMonthlyForm) => {
-            console.log("Submit", v);
-            addMonthly({
-                position: v.position,
-                debit: v.debit,
-                credit: v.credit
-            }).then(() => {
-                console.log("Added");
-                props.onSubmit?.();
-            })
-        }} />
+        <Modal show={props.open} onClose={() => { clearInput(); props.onSubmit?.() }} onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); submit(); } }}>
+            <Modal.Header>{t("add_monthly")}</Modal.Header>
+            <Modal.Body>
+                <EditField autoFocus alwaysEdit minimal label={t("position")} value={position} onChange={(v) => setPosition(v as string)} />
+                <EditField alwaysEdit minimal label={t("debit")} value={debit} onChange={(v) => setDebit(v as number)} />
+                <EditField alwaysEdit minimal label={t("credit")} value={credit} onChange={(v) => setCredit(v as number)} />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button color="success" onClick={submit}>{t("add_monthly")}</Button>
+            </Modal.Footer>
+        </Modal>
     )
 }

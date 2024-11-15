@@ -2,7 +2,6 @@ import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 
 export type EditFieldProps = {
-    id: string;
     value: string | number;
     label?: string;
 
@@ -10,15 +9,21 @@ export type EditFieldProps = {
     // When clicking on the text you can start editing.
     minimal?: boolean;
 
+    alwaysEdit?: boolean;
+    autoFocus?: boolean;
+
     sizing?: "xs" | "sm" | "md" | "lg";
 
-    onChange: (value: string | number) => void;
+    onSubmit?: (value: string | number) => void;
+    onChange?: (value: string | number) => void;
 }
 
 export default function EditField(props: EditFieldProps) {
     let inputRef = useRef<HTMLInputElement>(null);
-    let [editing, setEditing] = useState(false);
+
     let [editValue, setEditValue] = useState(props.value.toString());
+    let [isediting, setEditing] = useState(false);
+    let editing = isediting || !!props.alwaysEdit
 
     let type = "text";
     if (typeof props.value === "number") {
@@ -36,53 +41,64 @@ export default function EditField(props: EditFieldProps) {
                     updateValue = num;
                 }
             }
-            props.onChange(updateValue);
+            props.onSubmit?.(updateValue);
+            props.onChange?.(updateValue);
             setEditValue(updateValue.toString())
             setEditing(false);
         };
     }
 
+    const handleChange = (value: string) => {
+        setEditValue(value);
+        let changeValue: string | number = value;
+        if (type === "number") {
+            changeValue = parseFloat(value === "" ? "0" : value);
+        }
+        props.onChange?.(changeValue);
+    };
+
     useEffect(() => {
-        if (editing && inputRef && inputRef.current) {
+        if (editing && inputRef && inputRef.current && !props.alwaysEdit) {
             inputRef.current?.focus();
         }
     }, [editing]);
 
-    let sizing_class = " p-0 ";
-    if (props.sizing) {
-        switch (props.sizing!) {
-            case "xs":
-                sizing_class += " max-w-full border-none focus:outline-none ";
-                break;
-            case "sm":
-                sizing_class += "w-24 h-8";
-                break;
-            case "md":
-                sizing_class += "w-32 h-8";
-                break;
-            case "lg":
-                sizing_class += "w-48 h-12";
-                break
-        }
+    let sizing_class = " border rounded-lg ";
+    let sizing_class_div = "m-4";
+    switch (props.sizing ?? "md") {
+        case "xs":
+            sizing_class += " p-0 max-w-full border-none focus:outline-none ";
+            sizing_class_div = "m-0"
+            break;
+        case "sm":
+            sizing_class += " w-full m-w-24 h-8";
+            break;
+        case "md":
+            sizing_class += " w-full m-w-32 h-8";
+            break;
+        case "lg":
+            sizing_class += " w-full min-w-48 h-12";
+            break
     }
 
 
     if (props.minimal && !editing) {
-        return <div key={props.id} className="flex min-w-full" onClick={() => { setEditing(true) }}>
+        return <div className="flex min-w-full" onClick={() => { setEditing(true) }}>
             {props.value === "" ? <span className="text-gray-400">Empty</span> : props.value}
         </div>
     }
 
 
     return (
-        <div key={props.id} className="">
-            {props.label ? <label htmlFor={props.id} className="mr-2">{props.label}</label> : null}
+        <div className={sizing_class_div}>
+            {props.label ? <label htmlFor="this_input_label" className="mr-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label}</label> : null}
 
             <input
-                id={props.id}
+                id="this_input_label"
                 value={editing ? editValue : props.value}
                 disabled={!editing}
-                onChange={(e) => { setEditValue(e.target.value) }}
+                autoFocus={props.autoFocus}
+                onChange={(e) => { handleChange(e.target.value) }}
                 onKeyDown={(e) => { if (e.key === "Enter") { submit() } }}
                 onBlur={submit}
                 onSubmit={submit}
