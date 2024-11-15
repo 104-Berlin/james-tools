@@ -64,14 +64,16 @@ function Monthly(props: MonthlyProps) {
                     ]}
                     data={budgets}
                     onDelete={(row_index) => {
-                        let row = budgets[row_index];
+                        let rows = row_index.map((index) => budgets[index])
 
+                        console.log("Deleting from ", budgets, row_index);
                         // Update state
                         let newBudgets = [...budgets];
-                        newBudgets.splice(row_index, 1);
+
+                        newBudgets = newBudgets.filter((_, row) => !row_index.includes(row));
                         setBudgets(newBudgets);
 
-                        deleteMonthly(row.id.toString());
+                        deleteMonthly(rows.map((row) => row.id.toString()));
                     }}
                     onEdit={(row_index, key, value) => {
                         console.log("Edit", row_index, key, value);

@@ -1,11 +1,10 @@
 use actix_web::{delete, get, patch, post, web, HttpResponse};
 use sqlx::PgPool;
-use uuid::Uuid;
 
 use crate::{
     auth::Claims,
     error::Result,
-    models::budget::{Monthly, MonthlyAdd, MonthlyUpdate},
+    models::budget::{Monthly, MonthlyAdd, MonthlyDelete, MonthlyUpdate},
     repo::budget::BudgetRepo,
 };
 
@@ -44,17 +43,15 @@ pub async fn update(
     Ok(HttpResponse::Ok().finish())
 }
 
-#[delete("/monthly/{id}")]
+#[delete("/monthly")]
 pub async fn delete_monthly(
     pool: web::Data<PgPool>,
     claims: Claims,
-    id: web::Path<Uuid>,
+    id: web::Json<MonthlyDelete>,
 ) -> Result<HttpResponse> {
-    let mut connection = pool.begin().await?;
+    let mut connection = pool.acquire().await?;
 
-    BudgetRepo::delete_monthly(connection.as_mut(), claims, *id).await?;
-
-    connection.commit().await?;
+    BudgetRepo::delete_monthly(connection.as_mut(), claims, &id.into_inner().delete).await?;
 
     Ok(HttpResponse::Ok().finish())
 }

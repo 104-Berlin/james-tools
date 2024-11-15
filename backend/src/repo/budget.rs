@@ -83,7 +83,7 @@ impl BudgetRepo {
     {
         let mut connection = connection.begin().await?;
 
-        if !BudgetRepo::monthly_is_users(connection.as_mut(), entry.id, claims.sub).await? {
+        if !BudgetRepo::monthly_is_users(connection.as_mut(), &vec![entry.id], claims.sub).await? {
             return Err(Error::Unauthorized);
         }
 
@@ -110,7 +110,7 @@ impl BudgetRepo {
 
     pub async fn monthly_is_users<'a, A>(
         connection: A,
-        monthly_id: Uuid,
+        monthly_id: &[Uuid],
         user_id: Uuid,
     ) -> Result<bool>
     where
@@ -123,7 +123,7 @@ impl BudgetRepo {
             SELECT EXISTS (
                 SELECT 1
                 FROM user_monthly
-                WHERE user_id = $1 AND monthly_id = $2
+                WHERE user_id = $1 AND monthly_id IN (SELECT * FROM UNNEST($2::uuid[]))
             ) AS is_users
             "#,
             user_id,
@@ -138,7 +138,7 @@ impl BudgetRepo {
     pub async fn delete_monthly<'a, A>(
         connection: A,
         claims: Claims,
-        monthly_id: Uuid,
+        monthly_id: &[Uuid],
     ) -> Result<()>
     where
         A: Acquire<'a, Database = sqlx::Postgres>,
@@ -149,12 +149,10 @@ impl BudgetRepo {
             return Err(Error::Unauthorized);
         }
 
-        info!("Deleting monthly entry {}", monthly_id);
-
         sqlx::query!(
             r#"
             DELETE FROM user_monthly
-            WHERE user_id = $1 AND monthly_id = $2
+            WHERE user_id = $1 AND monthly_id IN (SELECT * FROM UNNEST($2::uuid[]))
             "#,
             claims.sub,
             monthly_id
@@ -165,7 +163,7 @@ impl BudgetRepo {
         sqlx::query!(
             r#"
             DELETE FROM monthly
-            WHERE id = $1
+            WHERE id IN (SELECT * FROM UNNEST($1::uuid[]))
             "#,
             monthly_id
         )

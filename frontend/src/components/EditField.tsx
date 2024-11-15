@@ -2,7 +2,7 @@ import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 
 export type EditFieldProps = {
-    key: string;
+    id: string;
     value: string | number;
     label?: string;
 
@@ -68,18 +68,18 @@ export default function EditField(props: EditFieldProps) {
 
 
     if (props.minimal && !editing) {
-        return <div className="flex min-w-full" onClick={() => { setEditing(true) }}>
+        return <div key={props.id} className="flex min-w-full" onClick={() => { setEditing(true) }}>
             {props.value === "" ? <span className="text-gray-400">Empty</span> : props.value}
         </div>
     }
 
 
     return (
-        <div className="">
-            {props.label ? <label htmlFor={props.key} className="mr-2">{props.label}</label> : null}
+        <div key={props.id} className="">
+            {props.label ? <label htmlFor={props.id} className="mr-2">{props.label}</label> : null}
 
             <input
-                id={props.key}
+                id={props.id}
                 value={editing ? editValue : props.value}
                 disabled={!editing}
                 onChange={(e) => { setEditValue(e.target.value) }}

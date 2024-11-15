@@ -26,3 +26,9 @@ pub struct MonthlyAdd {
     pub debit: Option<f64>,  // -
     pub credit: Option<f64>, // +
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MonthlyDelete {
+    pub delete: Vec<Uuid>,
+}

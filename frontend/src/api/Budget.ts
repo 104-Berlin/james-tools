@@ -32,6 +32,6 @@ export function updateMonthly(body: UpdateMonthly) {
     return axios.patch("/api/budget/monthly", body);
 }
 
-export function deleteMonthly(id: string) {
-    return axios.delete(`/api/budget/monthly/${id}`);
+export function deleteMonthly(ids: string[]) {
+    return axios.delete(`/api/budget/monthly`, { data: { delete: ids } });
 }
