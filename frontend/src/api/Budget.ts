@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 export type Monthly = {
-    id: number;
+    id: string;
     position: string;
     debit: number;
     credit: number;
