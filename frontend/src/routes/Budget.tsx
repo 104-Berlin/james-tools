@@ -47,6 +47,7 @@ function Monthly(_: MonthlyProps) {
 
     const fetchBudgets = () => {
         getMonthly().then((res) => {
+            console.log("Refetched monthly budgets: ", res.data);
             setBudgets(res.data);
         });
     };

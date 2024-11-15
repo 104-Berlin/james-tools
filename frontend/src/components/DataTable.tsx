@@ -24,6 +24,7 @@ export type HeaderCell = {
 }
 
 export type RowData = {
+    id: string;
     [key: string]: string | number | undefined;
 }
 
@@ -72,12 +73,12 @@ export default function DataTable(props: DataTableProps) {
                 </Table.Head>
                 <Table.Body key="body" className="divide-y divide-x">
                     {props.data.map((row, index) => {
-                        console.log("Rendnering row: ", row);
+                        let row_id = row.id;
                         return (
-                            <Table.Row key={`ROW_${index}`}
+                            <Table.Row key={`ROW_${row_id}`}
                                 className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 {showSelection && (
-                                    <Table.Cell className="shrink" key={`${index}Checkbox_Cell`} >
+                                    <Table.Cell className="shrink" key={`${row_id}Checkbox_Cell`} >
                                         <Checkbox checked={selectedRows.find((r) => r === index) != undefined} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                             if (e.target.checked) {
                                                 setSelectedRows([...selectedRows, index]);
@@ -92,8 +93,8 @@ export default function DataTable(props: DataTableProps) {
                                     props.columns.map((column) => {
                                         return (
                                             <TableCell
-                                                key={`${index}${column.key}`}
-                                                ident={`${index}${column.key}`}
+                                                key={`${row_id}${column.key}`}
+                                                ident={`${row_id}${column.key}`}
                                                 input_value={row[column.key] ?? ""}
                                                 canEdit={column.canEdit ?? false}
                                                 onEdit={(value) => {

@@ -86,7 +86,7 @@ export default function EditField(props: EditFieldProps) {
                     disabled={!editing}
                     autoFocus={props.autoFocus}
                     onChange={(e) => { handleChange(e.target.value) }}
-                    onKeyDown={(e) => { if (e.key === "Enter") { submit() } }}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.currentTarget.blur() } }}
                     onBlur={submit}
                     onSubmit={submit}
                     ref={inputRef}
