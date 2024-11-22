@@ -4,20 +4,33 @@ import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly, deleteMonth
 import { KeyboardEvent, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import EditField from "../components/EditField";
+import { BarChart, PieChart } from "../components/Charts";
+import { ApexOptions } from "apexcharts";
 
 
 export default function Budget() {
     let { t } = useTranslation("budget");
+    let [monthly, setMonthly] = useState<TMonthly[]>([]);
+
+    const fetchMonthly = () => {
+        getMonthly().then((res) => {
+            setMonthly(res.data);
+        });
+    };
+
+    useEffect(() => {
+        fetchMonthly();
+    }, []);
 
     return (
         <div className="flex flex-col justify-center items-center p-4">
             <h1 className="font-extrabold text-3xl p-8">Budget</h1>
             <Tabs variant="pills" className="w-full items-center justify-center">
                 <Tabs.Item title={t("overview")}>
-                    <Overview />
+                    <Overview monthly={monthly} />
                 </Tabs.Item>
                 <Tabs.Item title={t("monthly")}>
-                    <Monthly />
+                    <Monthly monthly={monthly} fetchMonthly={fetchMonthly} setMonthly={setMonthly} />
                 </Tabs.Item>
             </Tabs>
         </div>
@@ -25,36 +38,42 @@ export default function Budget() {
 }
 
 type OverviewProps = {
+    monthly: TMonthly[];
 }
 
-function Overview(_: OverviewProps) {
+function Overview(props: OverviewProps) {
+    const { t } = useTranslation("budget");
+
+    let data = props.monthly.reduce((acc, row) => {
+        return [acc[0] + row.debit, acc[1] + row.credit];
+    }, [0, 0]);
+
+
+    let series: ApexAxisChartSeries = [{
+        name: "Saldo",
+        data: [{
+            x: t("debit"), y: data[0], fillColor: "#FF5733"
+        }, { x: t("credit"), y: data[1], fillColor: "#33FF57" }],
+        group: "Overview"
+    }];
+
     return (
         <div>
-
-        </div>
+            <BarChart data={series} />
+        </div >
     )
 }
 
 type MonthlyProps = {
-
+    monthly: TMonthly[];
+    setMonthly: (monthly: TMonthly[]) => void;
+    fetchMonthly: () => void;
 }
 
-function Monthly(_: MonthlyProps) {
+function Monthly(props: MonthlyProps) {
     const { t } = useTranslation("budget");
-    const [budgets, setBudgets] = useState<TMonthly[]>([]);
     const [addModalOpen, setAddModalOpen] = useState(false);
 
-
-    const fetchBudgets = () => {
-        getMonthly().then((res) => {
-            console.log("Refetched monthly budgets: ", res.data);
-            setBudgets(res.data);
-        });
-    };
-
-    useEffect(() => {
-        fetchBudgets();
-    }, []);
 
     return (
         <div className="w-screen items-start justify-center py-4 px-32">
@@ -65,22 +84,21 @@ function Monthly(_: MonthlyProps) {
                         { key: "debit", label: t("debit"), canEdit: true },
                         { key: "credit", label: t("credit"), canEdit: true }
                     ]}
-                    data={budgets}
-                    footer={budgets.reduce((acc, row) => {
+                    data={props.monthly}
+                    footer={props.monthly.reduce((acc, row) => {
                         return { ...acc, position: acc.position + row.credit - row.debit, credit: acc.credit + row.credit, debit: acc.debit + row.debit }
                     }, { credit: 0, debit: 0, id: "footer_row", position: 0 })
                     }
                     onDelete={(row_index) => {
-                        let rows = row_index.map((index) => budgets[index])
+                        let rows = row_index.map((index) => props.monthly[index])
 
-                        console.log("Deleting from ", budgets, row_index);
                         // Update state
-                        let newBudgets = [...budgets];
+                        let newBudgets = [...props.monthly];
 
                         let quickLookup = new Set(row_index);
 
                         newBudgets = newBudgets.filter((_, row) => !quickLookup.has(row));
-                        setBudgets(newBudgets);
+                        props.setMonthly(newBudgets);
 
                         deleteMonthly(rows.map((row) => row.id.toString()));
                     }}
@@ -88,15 +106,15 @@ function Monthly(_: MonthlyProps) {
                     onEdit={(row_index, key, value) => {
                         console.log("Edit", row_index, key, value);
 
-                        let row = budgets[row_index];
+                        let row = props.monthly[row_index];
 
                         // Update state
-                        let newBudgets = [...budgets];
+                        let newBudgets = [...props.monthly];
                         newBudgets[row_index] = {
                             ...row,
                             [key]: value
                         };
-                        setBudgets(newBudgets);
+                        props.setMonthly(newBudgets);
 
                         updateMonthly({
                             id: row.id.toString(),
@@ -107,7 +125,7 @@ function Monthly(_: MonthlyProps) {
 
             <AddMonthlyModal open={addModalOpen} onSubmit={() => {
                 setAddModalOpen(false);
-                fetchBudgets();
+                props.fetchMonthly();
             }} />
         </div>
     )

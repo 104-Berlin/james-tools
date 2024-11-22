@@ -13,21 +13,17 @@ export function AuthProvider({ children }: PropsWithChildren<{}>) {
 
     let setToken = (value?: string) => {
         if (value) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            console.log("Setting token to: ", value);
+            localStorage.setItem("token", value);
             _setToken(value);
         } else {
+            delete axios.defaults.headers.common["Authorization"];
+            console.log("Removed token");
+            localStorage.removeItem("token");
             _setToken(null);
         }
     }
-
-    useEffect(() => {
-        if (token) {
-            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            localStorage.setItem("token", token);
-        } else {
-            delete axios.defaults.headers.common["Authorization"];
-            localStorage.removeItem("token");
-        }
-    }, [token])
 
     const contextValue = useMemo(() => ({ token, setToken }), [token]);
 

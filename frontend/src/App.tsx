@@ -7,6 +7,7 @@ import Profile from "./routes/Profile";
 import Register from "./routes/Register";
 import Login from "./routes/Login";
 import Budget from "./routes/Budget";
+import PastaRatio from "./routes/PastaRatio";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,6 +18,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/pasta_ratio",
+      element: <PastaRatio />,
     },
     {
       path: "/budget",

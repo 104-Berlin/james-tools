@@ -73,6 +73,10 @@ export default function EditField(props: EditFieldProps) {
     }
 
     let id = props.id ?? "edit_field";
+    let pattern = undefined;
+    if (type === "number") {
+        pattern = "[0-9]*";
+    }
 
     return (
         <div
@@ -82,7 +86,7 @@ export default function EditField(props: EditFieldProps) {
             <div className={props.style === "button" ? "flex" : ""}>
                 <input
                     id={id}
-                    value={editing ? editValue : props.value}
+                    value={(editing && !props.onChange) ? editValue : props.value}
                     disabled={!editing}
                     autoFocus={props.autoFocus}
                     onChange={(e) => { handleChange(e.target.value) }}
@@ -91,6 +95,7 @@ export default function EditField(props: EditFieldProps) {
                     onSubmit={submit}
                     ref={inputRef}
                     className={final_css}
+                    pattern={pattern}
                 />
 
                 {(props.style !== "button" || editing) ? null :
