@@ -21,6 +21,9 @@ function Header() {
                 <Navbar.Link href="pasta_ratio">
                     {t("pasta_ratio_header")}
                 </Navbar.Link>
+                <Navbar.Link href="htw">
+                    {t("htw")}
+                </Navbar.Link>
                 <ProtectedRoute>
                     <Navbar.Link href="/budget">
                         {t("budget")}
