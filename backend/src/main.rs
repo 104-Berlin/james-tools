@@ -8,6 +8,7 @@ use tracing_actix_web::TracingLogger;
 pub mod auth;
 pub mod config;
 pub mod error;
+pub mod htw;
 pub mod models;
 pub mod repo;
 pub mod routes;

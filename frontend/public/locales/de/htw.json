@@ -1,0 +1,17 @@
+{
+    "header": "HTW Freiraum finden",
+    "monday": "Montag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch",
+    "thursday": "Donnerstag",
+    "friday": "Freitag",
+    "saturday": "Samstag",
+    "sunday": "Sonntag",
+    "today": "Heute",
+    "tomorrow": "Morgen",
+    "weekday": "Wochentag",
+    "from": "von",
+    "to": "bis",
+    "search": "Freien Raum finden",
+    "update_rooms": "Räume aktualisieren"
+}
