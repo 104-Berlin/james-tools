@@ -1,4 +1,3 @@
-use chrono::{NaiveTime, Weekday};
 use futures::future::join_all;
 use sqlx::Acquire;
 use tracing::info;

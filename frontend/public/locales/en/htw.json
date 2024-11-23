@@ -1,0 +1,17 @@
+{
+    "header": "Find Free Room",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "weekday": "Weekday",
+    "from": "from",
+    "to": "to",
+    "search": "Find Free Room",
+    "update_rooms": "Update Rooms"
+}

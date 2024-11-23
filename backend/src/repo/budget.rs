@@ -1,5 +1,4 @@
 use sqlx::Acquire;
-use tracing::info;
 use uuid::Uuid;
 
 use crate::{

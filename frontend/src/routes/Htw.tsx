@@ -1,6 +1,8 @@
-import { Button, Dropdown, Select } from "flowbite-react";
+import { Button, Dropdown, HR, Select } from "flowbite-react";
 import { getEmptyRooms, Room, updateRooms } from "../api/Htw";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import DataTable from "../components/DataTable";
 
 function WeekdayToString(weekday: number) {
     switch (weekday) {
@@ -39,6 +41,7 @@ function choosableTimes() {
 const possibleTimes = choosableTimes();
 
 export default function Htw() {
+    const { t } = useTranslation("htw");
     let [weekday, setWeekday] = useState(0);
     let [startTime, setStartTime] = useState("08:00");
     let [endTime, setEndTime] = useState("09:00");
@@ -46,37 +49,56 @@ export default function Htw() {
 
 
     return (
-        <div className="p-4">
-            <Button onClick={() => { updateRooms() }}>Update Rooms</Button>
-            <Dropdown label={WeekdayToString(weekday)}>
-                <Dropdown.Item onClick={() => { setWeekday(0) }}>Monday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(1) }}>Tuesday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(2) }}>Wednesday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(3) }}>Thursday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(4) }}>Friday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(5) }}>Saturday</Dropdown.Item>
-                <Dropdown.Item onClick={() => { setWeekday(6) }}>Sunday</Dropdown.Item>
-            </Dropdown>
-            <Dropdown label={startTime}>
-                {possibleTimes.map((time) => {
-                    return <Dropdown.Item onClick={() => { setStartTime(time) }}>{time}</Dropdown.Item>
-                })}
-            </Dropdown>
-            <Dropdown label={endTime}>
-                {possibleTimes.filter((time) => {
-                    return possibleTimes.indexOf(time) > possibleTimes.indexOf(startTime);
-                }).map((time) => {
-                    return <Dropdown.Item onClick={() => { setEndTime(time) }}>{time}</Dropdown.Item>
-                })}
-            </Dropdown>
+        <div className="flex flex-col justify-center">
+            <h1 className="font-extrabold text-3xl p-8">
+                {t("header")}
+            </h1>
+            <div className="flex flex-col space-y-4 p-4 max-w-full">
+                <Button onClick={() => { updateRooms() }}>{t("update_rooms")}</Button>
+                <HR />
+                <div className="min-w-full max-w-full">
+                    <label>
+                        {t("weekday")}
+                    </label>
+                    <Dropdown theme={{ floating: { target: "w-full" } }} className="w-full" hidden label={WeekdayToString(weekday)}>
+                        <Dropdown.Item onClick={() => { setWeekday(0) }}>{t("monday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(1) }}>{t("tuesday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(2) }}>{t("wednesday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(3) }}>{t("thursday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(4) }}>{t("friday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(5) }}>{t("saturday")}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => { setWeekday(6) }}>{t("sunday")}</Dropdown.Item>
+                    </Dropdown>
+                </div>
+                <div className="flex space-x-4">
+                    <div>
+                        <label>
+                            {t("from")}
+                        </label>
+                        <Dropdown className="max-h-96 overflow-auto" label={startTime}>
+                            {possibleTimes.map((time) => {
+                                return <Dropdown.Item onClick={() => { setStartTime(time) }}>{time}</Dropdown.Item>
+                            })}
+                        </Dropdown>
+                    </div>
+                    <div>
+                        <label>
+                            {t("to")}
+                        </label>
+                        <Dropdown className="max-h-96 overflow-auto" label={endTime}>
+                            {possibleTimes.filter((time) => {
+                                return possibleTimes.indexOf(time) > possibleTimes.indexOf(startTime);
+                            }).map((time) => {
+                                return <Dropdown.Item onClick={() => { setEndTime(time) }}>{time}</Dropdown.Item>
+                            })}
+                        </Dropdown>
+                    </div>
 
-            <Button onClick={() => { getEmptyRooms(weekday, startTime, endTime).then((e) => setEmptyRooms(e.data)) }}>
-                Find Empty Rooms
-            </Button>
-            <div>
-                {emptyRooms.map((room) => {
-                    return <div>{room.name}</div>
-                })}
+                </div>
+                <Button className="flex items-center" onClick={() => { getEmptyRooms(weekday, startTime, endTime).then((e) => setEmptyRooms(e.data)) }}>
+                    {t("search")}
+                </Button>
+                <DataTable columns={[{ key: "name", label: "Name" }]} data={emptyRooms} />
             </div>
         </div>
     )

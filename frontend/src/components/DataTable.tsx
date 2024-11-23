@@ -52,7 +52,7 @@ export default function DataTable(props: DataTableProps) {
                 <div className="flex-grow" />
                 {props.onAdd && (<Button color="blue" onClick={props.onAdd}>{t("add")}</Button>)}
             </div>
-            <Table hoverable>
+            <Table className="max-w-full" hoverable>
                 <Table.Head>
                     {showSelection && (
                         <Table.HeadCell className="shrink" key="DataTableHeaderSelection">
@@ -73,7 +73,7 @@ export default function DataTable(props: DataTableProps) {
                         )
                     })}
                 </Table.Head>
-                <Table.Body key="body" className="divide-y divide-x">
+                <Table.Body key="body" className="divide-y divide-x max-w-full overflow-auto">
                     {props.data.map((row, index) => {
                         let row_id = row.id;
                         return (
