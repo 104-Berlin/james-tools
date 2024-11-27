@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
 
     let pool = connect_to_db().await?;
 
-    let ssl_builder = init_ssl();
+    //let ssl_builder = init_ssl();
 
     HttpServer::new(move || {
         App::new()
@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
             .service(Scope::new("/api").configure(routes::configure))
             .service(actix_files::Files::new("/uploads", "./uploads"))
     })
-    .bind_openssl(("0.0.0.0", CONFIG.http_port), ssl_builder)?
+    .bind/*_openssl*/(("0.0.0.0", CONFIG.http_port) /* , ssl_builder*/)?
     .run()
     .await?;
 
@@ -49,7 +49,7 @@ async fn connect_to_db() -> Result<PgPool> {
     Ok(pool)
 }
 
-fn init_ssl() -> SslAcceptorBuilder {
+fn _init_ssl() -> SslAcceptorBuilder {
     let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
     builder
         .set_private_key_file("key.pem", SslFiletype::PEM)

@@ -17,6 +17,6 @@ jobs:
     - name: Push Docker image
       run: sudo docker compose push
     - name: Deploy
-      run: sudo docker stack deploy --compose-file compose.yml james_tools
+      run: PG_USR=${{secrets.POSTGRES_USER}} PG_PW=${{secrets.POSTGRES_PASSWORD}} sudo docker stack deploy --compose-file compose.yml james_tools
     
       

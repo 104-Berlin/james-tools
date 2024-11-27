@@ -4,8 +4,8 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: md5
       PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${PG_USR:-postgres}
+      POSTGRES_PASSWORD: ${PG_PW:-1234}
       POSTGRES_DB: database
     ports:
       - "5432:5432"
@@ -19,7 +19,7 @@ services:
     image: pi-head.local:5000/james_backend:latest
     build: ./backend
     environment:
-      DATABASE_URL: postgres://postgres:1234@db/database
+      DATABASE_URL: postgres://${PG_USR:-postgres}:${PG_PW:-1234}@db/database
     ports:
       - "42069:42069"
     depends_on:
