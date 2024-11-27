@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "apexcharts": "^3.54.1",
+    "apexcharts": "^4.1.0",
     "axios": "^1.7.7",
     "flowbite-react": "^0.10.2",
     "https": "^1.0.0",

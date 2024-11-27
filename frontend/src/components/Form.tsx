@@ -1,5 +1,5 @@
 import { Button, TextInput } from "flowbite-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 export enum InputType {
     TEXT = "text",

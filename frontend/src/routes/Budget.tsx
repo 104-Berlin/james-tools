@@ -4,8 +4,7 @@ import { addMonthly, Monthly as TMonthly, getMonthly, updateMonthly, deleteMonth
 import { KeyboardEvent, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import EditField from "../components/EditField";
-import { BarChart, PieChart } from "../components/Charts";
-import { ApexOptions } from "apexcharts";
+import { BarChart } from "../components/Charts";
 
 
 export default function Budget() {

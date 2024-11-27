@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
 
 export type AuthContextType = {
     token: string | null;
