@@ -12,13 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build frontend Docker image
-      run: sudo docker build ./frontend -t localhost:5000/james-tools-frontend
-    - name: Push frontend Docker image
-      run: sudo docker push localhost:5000/james-tools-frontend
-    - name: Build backend Docker image
-      run: sudo docker build ./backend -t localhost:5000/james-tools-backend
-    - name: Push backend Docker image
-      run: sudo docker push localhost:5000/james-tools-backend
+    - name: Build Docker image
+      run: sudo docker compose build
+    - name: Push Docker image
+      run: sudo docker compose push
+    - name: Deploy
+      run: sudo docker stack deploy --compose-file compose.yml james_tools
     
       

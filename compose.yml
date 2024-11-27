@@ -11,7 +11,12 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==pi-data
   backend:
+    image: pi-head.local:5000/james_backend:latest
     build: ./backend
     environment:
       DATABASE_URL: postgres://postgres:1234@db/database
@@ -19,7 +24,8 @@ services:
       - "42069:42069"
     depends_on:
       - db
-  build_frontend:
+  frontend:
+    image: pi-head.local:5000/james_frontend:latest
     build: ./frontend
     ports:
       - "80:80"
