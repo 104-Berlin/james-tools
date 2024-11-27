@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build ./frontend -t localhost:5000/james-tools-frontend:$(date +%s)
+      run: sudo docker build ./frontend -t localhost:5000/james-tools-frontend:$(date +%s)
     - name: Push the Docker image
-      run: docker push localhost:5000/james-tools-frontend:$(date +%s)
+      run: sudo docker push localhost:5000/james-tools-frontend:$(date +%s)
       
