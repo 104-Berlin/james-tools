@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE monthly\n            SET position = COALESCE($1, position), \n                debit    = COALESCE($2, debit), \n                credit   = COALESCE($3, credit)\n            WHERE id = $4\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Float8",
+        "Float8",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8e8528cba722600dfb63aa2a9be0c66f755dbce437dd50adf513eccc2795e5a3"
+}

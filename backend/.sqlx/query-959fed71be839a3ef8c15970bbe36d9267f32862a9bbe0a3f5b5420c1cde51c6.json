@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO users (email, username, password_hash, first_name, last_name)\n            VALUES ($1, $2, $3, $4, $5)\n            RETURNING id, email, username, first_name, last_name, password_hash\n            ",
+  "query": "\n            SELECT id, email, username, first_name, last_name, password_hash, profile_picture\n            FROM users\n            WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -32,25 +32,27 @@
         "ordinal": 5,
         "name": "password_hash",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "profile_picture",
+        "type_info": "Varchar"
       }
     ],
     "parameters": {
       "Left": [
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Varchar"
+        "Uuid"
       ]
     },
     "nullable": [
       false,
       false,
       false,
+      true,
+      true,
       false,
-      false,
-      false
+      true
     ]
   },
-  "hash": "e44a657873e097482d9637dcc9318b2cca558b65eb1af0aae0227ff5497a035f"
+  "hash": "959fed71be839a3ef8c15970bbe36d9267f32862a9bbe0a3f5b5420c1cde51c6"
 }

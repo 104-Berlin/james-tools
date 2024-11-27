@@ -1,0 +1,36 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT r.id, r.name, r.request_id FROM htw_room r\n                WHERE r.id NOT IN (SELECT t.room_id\n            FROM time_entry t\n            WHERE \n                t.weekday = $1\n                AND t.start_time < $2\n                AND t.end_time > $3\n            ORDER BY t.start_time);\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "request_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Time",
+        "Time"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a2bf380594b8b526d1733ee164302a9e141920061a756800a1f237be04280857"
+}

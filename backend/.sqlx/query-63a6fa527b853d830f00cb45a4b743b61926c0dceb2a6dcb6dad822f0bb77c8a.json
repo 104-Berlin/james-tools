@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT EXISTS (\n                SELECT 1\n                FROM user_monthly\n                WHERE user_id = $1 AND monthly_id IN (SELECT * FROM UNNEST($2::uuid[]))\n            ) AS is_users\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "is_users",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "63a6fa527b853d830f00cb45a4b743b61926c0dceb2a6dcb6dad822f0bb77c8a"
+}

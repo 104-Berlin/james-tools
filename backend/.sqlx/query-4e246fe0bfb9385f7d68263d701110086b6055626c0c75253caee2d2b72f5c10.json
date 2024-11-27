@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM monthly\n            WHERE id IN (SELECT * FROM UNNEST($1::uuid[]))\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4e246fe0bfb9385f7d68263d701110086b6055626c0c75253caee2d2b72f5c10"
+}
