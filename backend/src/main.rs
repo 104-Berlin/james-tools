@@ -1,8 +1,8 @@
 use actix_web::{middleware::Logger, web, App, HttpServer, Scope};
 use config::CONFIG;
-use error::Result;
+use error::{Error, Result};
 use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
-use sqlx::{postgres::PgPoolOptions, PgPool};
+use sqlx::{migrate, postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
 pub mod auth;
@@ -21,6 +21,10 @@ async fn main() -> Result<()> {
     std::fs::create_dir_all("./uploads")?;
 
     let pool = connect_to_db().await?;
+    migrate!("./migrations")
+        .run(&pool)
+        .await
+        .map_err(|e| Error::DatabaseError(sqlx::Error::Migrate(Box::new(e))))?;
 
     //let ssl_builder = init_ssl();
 
