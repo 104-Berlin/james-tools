@@ -15,12 +15,12 @@ pub async fn get_time_entries(room: &Room) -> Vec<TimeEntry> {
         "https://lsf.htw-berlin.de/qisserver/rds?state=wplan&act=Raum&pool=Raum&raum.rgid={}",
         room.request_id
     );
-    let cert = std::fs::read("wildcard-self-signed.pem").expect("Reading self signed wildcard");
-    let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
+    //let cert = std::fs::read("wildcard-self-signed.pem").expect("Reading self signed wildcard");
+    //let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
 
     let html = Client::builder()
         .use_rustls_tls()
-        .add_root_certificate(cert)
+        //.add_root_certificate(cert)
         .build()
         .unwrap()
         .get(url)
@@ -147,12 +147,12 @@ pub async fn get_time_entries(room: &Room) -> Vec<TimeEntry> {
 
 pub async fn fetch_rids() -> Vec<FetchedRoom> {
     let url = "https://lsf.htw-berlin.de/qisserver/rds?state=wsearchv&search=3&raum.gebid=1112&choice.k_campus.id=y&k_campus.id=4&P_start=0&P_anzahl=1000&_form=display";
-    let cert = std::fs::read("wildcard-self-signed.pem").expect("Reading self signed wildcard");
-    let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
+    //let cert = std::fs::read("wildcard-self-signed.pem").expect("Reading self signed wildcard");
+    //let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
 
     let html = Client::builder()
         .use_rustls_tls()
-        .add_root_certificate(cert)
+        //.add_root_certificate(cert)
         .build()
         .unwrap()
         .get(url)
