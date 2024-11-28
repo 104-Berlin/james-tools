@@ -12,6 +12,7 @@ RUN rm ./target/release/deps/backend*
 
 COPY ./src ./src
 COPY ./.sqlx ./.sqlx
+COPY ./migrations ./migrations
 
 ENV SQLX_OFFLINE=1
 
