@@ -26,6 +26,7 @@ FROM ubuntu:latest
 
 WORKDIR /app
 
+COPY ./wildcard-self-signed.pem /app/wildcard-self-signed.pem
 COPY --from=builder /app/target/release/backend .
 
 ENTRYPOINT ["./backend"]
