@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import axios from 'axios'
-//import './i18next'
+import './i18next'
 
 
 /*axios.defaults.httpsAgent = {

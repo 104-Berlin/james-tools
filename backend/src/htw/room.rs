@@ -19,7 +19,7 @@ pub async fn get_time_entries(room: &Room) -> Vec<TimeEntry> {
     //let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
 
     let html = Client::builder()
-        .use_rustls_tls()
+        //.use_rustls_tls()
         //.add_root_certificate(cert)
         .build()
         .unwrap()
@@ -151,7 +151,7 @@ pub async fn fetch_rids() -> Vec<FetchedRoom> {
     //let cert = reqwest::Certificate::from_pem(&cert).expect("Parsing certificate");
 
     let html = Client::builder()
-        .use_rustls_tls()
+        //.use_rustls_tls()
         //.add_root_certificate(cert)
         .build()
         .unwrap()
