@@ -27,7 +27,5 @@ services:
   frontend:
     image: pi-head.local:5000/james_frontend:latest
     build: ./frontend
-    ports:
-      - "80"
 volumes:
   db_data:
