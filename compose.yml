@@ -11,10 +11,10 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-    deploy:
-      placement:
-        constraints:
-          - node.hostname==pi-data
+#    deploy:
+#      placement:
+#        constraints:
+#          - node.hostname==pi-data
   backend:
     image: pi-head.local:5000/james_backend:latest
     build: ./backend
